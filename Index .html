@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Little About Us ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Georgia, serif;
+  background: #fff0f5;
+  color: #573746;
+}
+
+.container {
+  max-width: 600px;
+  margin: 25px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 5px 25px #d99aaf55;
+}
+
+h1 {
+  text-align: center;
+  color: #c04c78;
+}
+
+.intro {
+  text-align: center;
+  font-style: italic;
+  margin-bottom: 35px;
+}
+
+.question {
+  margin-bottom: 30px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+textarea {
+  width: 100%;
+  min-height: 140px;
+  box-sizing: border-box;
+  padding: 15px;
+  border: 1px solid #edc6d4;
+  border-radius: 12px;
+  font-size: 15px;
+  font-family: Arial;
+  resize: vertical;
+  outline-color: #c04c78;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  background: #c04c78;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+}
+
+#message {
+  text-align: center;
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>A Little About Us ❤️</h1>
+
+<p class="intro">
+Some questions I've always wanted to ask you...
+Take your time. I want your honest answers.
+</p>
+
+<form id="qaForm">
+
+<div class="question">
+<label>
+1. What was your first impression of me
+the very first moment our eyes met?
+</label>
+<textarea id="q1" placeholder="Write your answer here..." required></textarea>
+</div>
+
+<div class="question">
+<label>
+2. What's something you later discovered
+about me that still shocks you to this day?
+</label>
+<textarea id="q2" placeholder="Write your answer here..." required></textarea>
+</div>
+
+<div class="question">
+<label>
+3. What would you hope to do together
+in the future if anything were possible?
+</label>
+<textarea id="q3" placeholder="Write your answer here..." required></textarea>
+</div>
+
+<div class="question">
+<label>
+4. What's one thing about me that you hope
+never changes and stays forever?
+</label>
+<textarea id="q4" placeholder="Write your answer here..." required></textarea>
+</div>
+
+<button type="submit">
+Send My Answers ❤️
+</button>
+
+</form>
+
+<p id="message"></p>
+
+</div>
+
+<script type="module">
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+
+import {
+ getFirestore,
+ collection,
+ addDoc,
+ serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const firebaseConfig = {
+ apiKey: "YOUR_API_KEY",
+ authDomain: "YOUR_PROJECT.firebaseapp.com",
+ projectId: "YOUR_PROJECT_ID",
+ storageBucket: "YOUR_STORAGE_BUCKET",
+ messagingSenderId: "YOUR_SENDER_ID",
+ appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById("qaForm")
+.addEventListener("submit", async (e) => {
+
+ e.preventDefault();
+
+ const button = e.target.querySelector("button");
+ const message = document.getElementById("message");
+
+ button.disabled = true;
+ button.textContent = "Sending...";
+
+ try {
+   await addDoc(collection(db, "feedback"), {
+     q1: document.getElementById("q1").value.trim(),
+     q2: document.getElementById("q2").value.trim(),
+     q3: document.getElementById("q3").value.trim(),
+     q4: document.getElementById("q4").value.trim(),
+     submittedAt: serverTimestamp()
+   });
+
+   message.textContent = "Thank you for your honesty! ❤️";
+   e.target.reset();
+
+ } catch(error) {
+   console.error(error);
+   message.textContent = "Couldn't send your answers. Please try again.";
+ } finally {
+   button.disabled = false;
+   button.textContent = "Send My Answers ❤️";
+ }
+});
+</script>
+
+</body>
+</html>
